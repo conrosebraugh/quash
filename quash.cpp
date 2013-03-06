@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <cstdlib>
+#include "Job.cpp"
 
 using namespace std;
 
