@@ -5,6 +5,9 @@
 
 using namespace std;
 
+string* parseinput(string input);
+int countwords(string strString);
+
 int main(int argc, char **argv, char **envp)
 {
   //  char input[1024];
@@ -26,4 +29,55 @@ int main(int argc, char **argv, char **envp)
     else if(input == "\n")
       continue;
   }
+}
+
+string* parseinput(string input)
+{
+  int pos1, pos2 = 0;
+
+  pos1 = input.find(" ");
+
+  string* cmds;
+  cmds = new string[countwords(input)+1];
+
+  cmds[0] = input.substr(0, pos1);
+
+  int i = 1;
+  int len = 0;
+  while(len < input.length())
+  {
+    pos1++;
+    pos2 = input.substr(pos1).find(" ");
+    cmds[i] =  input.substr(pos1, pos2);
+    len += input.substr(pos1, pos1-pos2).length();
+    pos1 = pos1 + pos2;
+    i++;
+  }
+
+  for(int j = 0; j < countwords(input)+1; j++)
+    cout << cmds[j] << endl;
+
+  return cmds;
+}
+
+int countwords(string str)
+{
+  int nSpaces = 0;
+  unsigned int i = 0;
+
+  while(isspace(str.at(i)))
+    i++;
+
+  for(; i < str.length(); i++)
+  {
+    if(isspace(str.at(i)))
+    {
+      nSpaces++;
+      while(isspace(str.at(i++)))
+        if(str.at(i) == '\0')
+          nSpaces--;
+    }
+  }
+
+  return nSpaces + 1;
 }
