@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <unistd.h>
+#include <string>
 
 using namespace std;
 
@@ -12,16 +13,15 @@ private:
 
 public:
   
-  Job(int, pid_t, string);
-  int getjobid()   {return jobid};
-  pid_t getpid()   {return pid};
-  string command() {return command};
+  Job(int jid, pid_t p, string comm)
+  {
+    this->jobid = jid;
+    this->pid = p;
+    this->command = comm;   
+  }
+  int getjobid()   {return jobid;}
+  pid_t getpid()   {return pid;}
+  string getcommand() {return command;}
 
 };
 
-Job::Job(int jid, pid_t p, string comm)
-{
-  jobid = jid;
-  pid = p;
-  command = comm;
-}
