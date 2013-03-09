@@ -1,0 +1,63 @@
+
+
+int commandExecution( {command format} )
+{
+
+	
+	pid_t pid;
+	
+	pid = fork();
+	
+	if(pid < 0)
+	{
+		cerr << "fork failed" << endl;
+		exit(0);
+	}
+	else if( pid == 0)
+	{
+		
+	}
+	
+}
+
+int execute( argv)
+
+
+
+int redirectToFile( const string & filename)
+{
+	
+	FILE * inFile = fopen (filename.c_str(), "r");
+	if(inFile == NULL)
+	{
+		
+	}
+	else
+	{
+		
+	}
+
+}
+
+//#include<unistd.h>
+void cd( char **argv)
+{
+	if(argv[1] != NULL)
+	{
+		//absolute path given
+		if(argv[1][0] == '/')
+		{
+			if(chdir(argv[1]) != 0)
+				cerr << "Error#: " << errno << " invalid directory: " << argv[1] << endl;
+		}
+		//dosen't start with '/' so relitive path given
+		else
+		{
+		
+		}
+	}
+	//only cd given as argument so change to home directory
+	else
+		if(chdir
+
+}
