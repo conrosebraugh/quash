@@ -1,12 +1,14 @@
 #include <iostream>
+#include <vector>
 #include <stdio.h>
 #include <cstdlib>
 #include "Job.cpp"
 
 using namespace std;
 
-string* parseinput(string input);
+vector<string> parseinput(string input);
 int countwords(string strString);
+
 
 int main(int argc, char **argv, char **envp)
 {
@@ -24,10 +26,10 @@ int main(int argc, char **argv, char **envp)
     cout << "quash$ ";
     getline(cin, input);
     
-    string* cmdinput = parseinput(input);
+    vector<string> cmdinput = parseinput(input);
 
-    int numcmds = sizeof(cmdinput)/sizeof(string);
-    
+    int numcmds = cmdinput.size();
+
     if(numcmds == 1)
     {
       if(cmdinput[0] == "quit" || cmdinput[0] == "exit")
@@ -36,45 +38,40 @@ int main(int argc, char **argv, char **envp)
 	continue;
       else
       {
-	
+      	pid_t pid;
       }
     }//end if(numcmds == 1)
 
   }
 }
 
-string* parseinput(string input)
+vector<string> parseinput(string input)
 {
-  int pos1, pos2 = 0;
+  int pos1, pos2 = 0, wordcount = countwords(input);
 
   pos1 = input.find(" ");
 
-  string* cmds;
-  cmds = new string[countwords(input)+1];
-
-  if(countwords(input) == 1)
+  vector<string> cmds;
+ 
+  if(wordcount == 1)
   {
-    cmds[0] = input;
+    cmds.push_back(input);
     return cmds;
   }
   else
   {
-    cmds[0] = input.substr(0, pos1);
+    cmds.push_back(input.substr(0, pos1));
 
     int i = 1;
-    int len = 0;
-    while(len < input.length())
+
+    while(i < wordcount)
       {
 	pos1++;
 	pos2 = input.substr(pos1).find(" ");
-	cmds[i] =  input.substr(pos1, pos2);
-	len += input.substr(pos1, pos1-pos2).length();
+	cmds.push_back(input.substr(pos1, pos2));
 	pos1 = pos1 + pos2;
 	i++;
       }
-
-    //  for(int j = 0; j < countwords(input)+1; j++)
-    //    cout << cmds[j] << endl;
 
     return cmds;
   }
@@ -82,22 +79,25 @@ string* parseinput(string input)
 
 int countwords(string str)
 {
-  int nSpaces = 0;
-  unsigned int i = 0;
+   bool inSpaces = true;
+   int numWords = 0;
+   int i = 0;
 
-  while(isspace(str[i]))
-    i++;
+   while (str[i] != NULL)
+   {
+      if (isspace(str[i]))
+      {
+         inSpaces = true;
+      }
+      else if (inSpaces)
+      {
+         numWords++;
+         inSpaces = false;
+      }
 
-  for(; i < str.length(); i++)
-  {
-    if(isspace(str[i]))
-    {
-      nSpaces++;
-      while(isspace(str[i++]))
-        if(str.at(i) == '\0')
-          nSpaces--;
-    }
-  }
+      ++i;
+   }
 
-  return nSpaces + 1;
+   return numWords;
 }
+
