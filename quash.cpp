@@ -2,13 +2,15 @@
 #include <vector>
 #include <stdio.h>
 #include <cstdlib>
+#include <unistd.h>
+#include <sys/wait.h>
 #include "Job.cpp"
 
 using namespace std;
 
 vector<string> parseinput(string input);
 int countwords(string strString);
-
+char** vectortoarray(vector<string> &thestrings);
 
 int main(int argc, char **argv, char **envp)
 {
@@ -17,9 +19,8 @@ int main(int argc, char **argv, char **envp)
   string PATH = envp[42];
   string HOME = envp[64];
 
-  cout << endl;
-
-  int i = 0;
+  int status;
+  pid_t pid;
 
   while(true)
   {
@@ -30,20 +31,29 @@ int main(int argc, char **argv, char **envp)
 
     int numcmds = cmdinput.size();
 
-    if(numcmds == 1)
+    if(cmdinput[0] == "quit" || cmdinput[0] == "exit")
+      exit(0);
+    else if(cmdinput[0] != "")
     {
-      if(cmdinput[0] == "quit" || cmdinput[0] == "exit")
-	exit(0);
-      else if(cmdinput[0] == "\n")
-	continue;
-      else
+      pid = fork();
+      if(pid == -1)
+	cerr << "Fork error" << endl;
+      else if(pid == 0)
       {
-      	pid_t pid;
-      }
-    }//end if(numcmds == 1)
+	char** temp = vectortoarray(cmdinput);
+	execvp(cmdinput[0].c_str(), temp);
+	  
+      }//end else if(pid...  
+      else
+	wait(&status);
+      continue;
+    }
+    else
+      continue;
+    
 
-  }
-}
+  }//end while
+}//end main
 
 vector<string> parseinput(string input)
 {
@@ -101,3 +111,15 @@ int countwords(string str)
    return numWords;
 }
 
+char** vectortoarray(vector<string> &thestrings)
+{
+  //create a dynamic array of c strings
+  char** temp = new char*[thestrings.size()-1];
+
+  int i = 1;
+
+  for(; i < thestrings.size(); i++)
+    temp[i-1] = (char*)thestrings[i].c_str();
+
+  return temp;
+}
