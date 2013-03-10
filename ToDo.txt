@@ -1,0 +1,20 @@
+Check list
+
+( )  Run executables without arguments
+( )  Run executables with argumnts
+( )  Run executable with abslute path
+( )  Run executable with relitive path
+( )  Background executables
+( )  Child process enviroment inheritance
+( )  Working Set function
+( )  Working cd function
+( )  Working quit and exit functionality
+( )  Working job lookup function
+( )  I/O redirection file
+( )  Piping
+( )  Read commands stored in file
+( )  Report
+
+Bonus
+( )  Support multiple pipes
+( )  Kill background processes
