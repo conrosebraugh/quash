@@ -39,25 +39,58 @@ int redirectToFile( const string & filename)
 
 }
 
-//#include<unistd.h>
-void cd( char **argv)
+
+//#include <signal.h>
+//#include <cstring>
+//#include <errno.h>
+void kill( string *cmds)
 {
-	if(argv[1] != NULL)
+
+	if(cmds[1].empty())
+	{
+		cerr << "Must pass ID number of process to kill" << endl;
+		return;
+	}
+	if(kill(atoi(cmds[1].c_str()), SIGKILL) != 0)
+	{
+		cerr << "Error#: " << errno << " Process could not be killed" << endl;
+	}
+
+}
+
+
+
+
+
+
+
+
+//#include <unistd.h>
+//#include <cstring>
+//#include <errno.h>
+void cd( string *cmds)
+{
+	if(cmds[1] != NULL)//TO DO Must check if last element in array is NULL********************
 	{
 		//absolute path given
-		if(argv[1][0] == '/')
+		if(cmds[1][0] == '/')
 		{
-			if(chdir(argv[1]) != 0)
-				cerr << "Error#: " << errno << " invalid directory: " << argv[1] << endl;
+			if(chdir(cmds[0].c_str()) != 0)
+				cerr << "Error#: " << errno << " invalid directory: " << cmds[1] << endl;
 		}
 		//dosen't start with '/' so relitive path given
 		else
 		{
-		
+			string workingdir = get_current_dir_name();
+			if(chdir((workingdir + "/" + cmds[1]).c_str()) != 0)
+				cerr << "Error#: " << errno << " invalid directory: " << cmds[1] << endl;
 		}
 	}
 	//only cd given as argument so change to home directory
 	else
-		if(chdir
+		if(chdir(getenv("HOME")) != 0)
+			cerr << "Error#: " << errno << " couldn't change directory to: " << getenv("HOME") << endl;
+			
 
 }
+
