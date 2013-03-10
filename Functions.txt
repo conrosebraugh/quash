@@ -42,7 +42,7 @@ int redirectToFile( const string & filename)
 
 //#include <signal.h>
 //#include <cstring>
-//#include <errno.h>
+//#include <iostream>
 void kill( string *cmds)
 {
 
@@ -53,44 +53,65 @@ void kill( string *cmds)
 	}
 	if(kill(atoi(cmds[1].c_str()), SIGKILL) != 0)
 	{
-		cerr << "Error#: " << errno << " Process could not be killed" << endl;
+		cerr << "Error, Process could not be killed" << endl;
 	}
 
 }
-
-
-
-
 
 
 
 
 //#include <unistd.h>
 //#include <cstring>
-//#include <errno.h>
+//#include <iostream>
 void cd( string *cmds)
 {
-	if(cmds[1] != NULL)//TO DO Must check if last element in array is NULL********************
+	if(!cmds[1].empty())
 	{
 		//absolute path given
 		if(cmds[1][0] == '/')
 		{
 			if(chdir(cmds[0].c_str()) != 0)
-				cerr << "Error#: " << errno << " invalid directory: " << cmds[1] << endl;
+				cerr << "Error, invalid directory: " << cmds[1] << endl;
 		}
 		//dosen't start with '/' so relitive path given
 		else
 		{
 			string workingdir = get_current_dir_name();
 			if(chdir((workingdir + "/" + cmds[1]).c_str()) != 0)
-				cerr << "Error#: " << errno << " invalid directory: " << cmds[1] << endl;
+				cerr << "Error, invalid directory: " << cmds[1] << endl;
 		}
 	}
 	//only cd given as argument so change to home directory
 	else
 		if(chdir(getenv("HOME")) != 0)
-			cerr << "Error#: " << errno << " couldn't change directory to: " << getenv("HOME") << endl;
+			cerr << "Error, couldn't change directory to: " << getenv("HOME") << endl;
 			
+}
+
+
+
+void set( string *cmds)
+{
+
+	if(cmds[1].empty())
+	{
+		cerr << "Error, No enviroment specified" << endl;
+		return;
+	}
+	
+	if(strncmp(cmds[1].c_str(), "HOME=", 5) == 0)
+	{
+		if(setenv("HOME", &cmds[1][5],1) == -1)
+			cerr << "Error, could not set HOME" << endl;
+	}
+	if(strncmp(cmds[1].c_str(), "PATH=", 5) == 0)
+	{
+		if(setenv("PATH", &cmds[1][5],1) == -1)
+			cerr << "Error, could not set PATH << endl;
+	}
 
 }
+
+
 
