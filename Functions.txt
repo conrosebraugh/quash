@@ -71,7 +71,7 @@ void cd( string *cmds)
 		//absolute path given
 		if(cmds[1][0] == '/')
 		{
-			if(chdir(cmds[0].c_str()) != 0)
+			if(chdir(cmds[1].c_str()) != 0)
 				cerr << "Error, invalid directory: " << cmds[1] << endl;
 		}
 		//dosen't start with '/' so relitive path given
