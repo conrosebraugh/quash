@@ -1,9 +1,11 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include <stdio.h>
 #include <cstdlib>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <cstring>
 #include "Job.cpp"
 
 using namespace std;
@@ -11,6 +13,7 @@ using namespace std;
 vector<string> parseinput(string input);
 int countwords(string strString);
 char** vectortoarray(vector<string> &thestrings);
+//void basicParse(string input, string found, int splitPoint);
 
 int main(int argc, char **argv, char **envp)
 {
@@ -18,16 +21,23 @@ int main(int argc, char **argv, char **envp)
   string input;
   string PATH = envp[42];
   string HOME = envp[64];
+  string workingdir;
 
   int status;
   pid_t pid;
 
   while(true)
   {
-    cout << "quash$ ";
+  	workingdir = get_current_dir_name();
+  	int temp = workingdir.find_last_of("/");
+  	workingdir.erase(0,temp+1);
+    cout << "[" << workingdir << "]" << "quash$ ";
+    
     getline(cin, input);
     
     vector<string> cmdinput = parseinput(input);
+    //for( vector<string>::const_iterator i = cmdinput.begin(); i != cmdinput.end(); ++i)
+    //cout << *i << ' ';
 
     int numcmds = cmdinput.size();
 
@@ -111,6 +121,29 @@ int countwords(string str)
    return numWords;
 }
 
+/*void basicParse(string input, string &found, int &splitPoint)
+{
+	for(int i=0; i<input; i++)
+	{
+		if(strcmp(input[i], "|") == 0)
+		{
+			found = "pipe";
+			splitPoint = i;
+		}
+		else if(strcmp(input[i], ">") == 0)
+		{
+			found = "reOut";
+			splitPoint = i;
+		}
+		else if(strcmp(input[i], "<") == 0)
+		{
+			found = "reIn";
+			splitPoint = i;
+		}
+	}
+	
+}*/
+
 char** vectortoarray(vector<string> &thestrings)
 {
   //create a dynamic array of c strings
@@ -123,3 +156,4 @@ char** vectortoarray(vector<string> &thestrings)
 
   return temp;
 }
+
