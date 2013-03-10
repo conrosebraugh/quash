@@ -115,7 +115,8 @@ void set( string *cmds)
 
 
 //Basic Zombie reaping with sigaction()
-
+//#include <signal.h>
+//#include <sys/wait.h>
 
 void sigchld_handler(int s)
 {
