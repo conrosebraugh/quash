@@ -38,8 +38,11 @@ int main(int argc, char **argv, char **envp)
     
     int numcmds = cmdinput.size();
 
+
+    //Check to see if the user issued the quit command
     if(cmdinput[0] == "quit" || cmdinput[0] == "exit")
       exit(0);
+    //Check to see if the user wants to see the environment, print it out
     else if(cmdinput[0] == "env")
     {
       int i = 0;
@@ -49,20 +52,40 @@ int main(int argc, char **argv, char **envp)
 	i++;
       }
     }
+    //command isn' one of the above and isn't just a carriage return
     else if(cmdinput[0] != "")
     {
-      pid = fork();
-      if(pid == -1)
+      pid = fork(); //fork a new process
+     
+      if(pid == -1) //check to see if there was a fork error
 	cerr << "Fork error" << endl;
+      //If this is the child process...
       else if(pid == 0)
       {
-	char** temp = vectortoarray(cmdinput);
-	execvp(cmdinput[0].c_str(), temp);
+	//...and the command is a single word...
+	if(cmdinput.size() == 1)
+	{
+	  char* blah = (char*)"";
+	  //exec a new process that is the single command 
+	  //which is found at cmdinput[0]
+	  execlp(cmdinput[0].c_str(), blah, (char*)NULL);
+	}
+	//...and the command has arguments...
+	else 
+	{
+	  //create a c_str array of the arguments to the command
+	  char** argarray = vectortoarray(cmdinput);
+	  //exec a new process that is the command at cmdinput[0]
+	  //followed by the arguments to that command
+	  execvp(cmdinput[0].c_str(), argarray);
+	}
       }//end else if(pid...  
+      //If this is the parent process...
       else
-	wait(&status);
+	wait(&status); //wait for the child process to finish
       continue;
     }
+    //carriage return case. continue with the main loop
     else
       continue;
     
