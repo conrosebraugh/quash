@@ -17,10 +17,9 @@ char** vectortoarray(vector<string> &thestrings);
 
 int main(int argc, char **argv, char **envp)
 {
-  //  char input[1024];
   string input;
-  string PATH = envp[42];
-  string HOME = envp[64];
+  string PATH = (string)getenv("PATH");
+  string HOME = (string)getenv("HOME");
   string workingdir;
 
   int status;
@@ -28,21 +27,28 @@ int main(int argc, char **argv, char **envp)
 
   while(true)
   {
-  	workingdir = get_current_dir_name();
-  	int temp = workingdir.find_last_of("/");
-  	workingdir.erase(0,temp+1);
+    workingdir = get_current_dir_name();
+    int temp = workingdir.find_last_of("/");
+    workingdir.erase(0,temp+1);
     cout << "[" << workingdir << "]" << "quash$ ";
     
     getline(cin, input);
     
     vector<string> cmdinput = parseinput(input);
-    //for( vector<string>::const_iterator i = cmdinput.begin(); i != cmdinput.end(); ++i)
-    //cout << *i << ' ';
-
+    
     int numcmds = cmdinput.size();
 
     if(cmdinput[0] == "quit" || cmdinput[0] == "exit")
       exit(0);
+    else if(cmdinput[0] == "env")
+    {
+      int i = 0;
+      while(envp[i] != NULL)
+      {
+	cout << envp[i] << endl;
+	i++;
+      }
+    }
     else if(cmdinput[0] != "")
     {
       pid = fork();
@@ -52,7 +58,6 @@ int main(int argc, char **argv, char **envp)
       {
 	char** temp = vectortoarray(cmdinput);
 	execvp(cmdinput[0].c_str(), temp);
-	  
       }//end else if(pid...  
       else
 	wait(&status);
@@ -156,4 +161,3 @@ char** vectortoarray(vector<string> &thestrings)
 
   return temp;
 }
-
