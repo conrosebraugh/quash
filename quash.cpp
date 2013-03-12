@@ -15,7 +15,7 @@ vector<string> parseinput(string input);
 int countwords(string strString);
 char** vectortoarray(vector<string> &thestrings);
 //void basicParse(string input, string found, int splitPoint);
-void cd( string cmds);
+void cd( vector<string> cmds);
 
 int main(int argc, char **argv, char **envp)
 {
@@ -197,28 +197,28 @@ char** vectortoarray(vector<string> &thestrings)
   return temp;
 }
 
-void cd( string cmds[])
+void cd(vector<string> cmds)
 {
-	if(!cmds[1].empty())
-	{
-		//absolute path given
-		if(cmds[1][0] == '/')
-		{
-			if(chdir(cmds[1].c_str()) != 0)
-				cerr << "Error, invalid directory: " << cmds[1] << endl;
-		}
-		//dosen't start with '/' so relitive path given
-		else
-		{
-			string workingdir = get_current_dir_name();
-			if(chdir((workingdir + "/" + cmds[1]).c_str()) != 0)
-				cerr << "Error, invalid directory: " << cmds[1] << endl;
-		}
-	}
-	//only cd given as argument so change to home directory
-	else
-		if(chdir(getenv("HOME")) != 0)
-			cerr << "Error, couldn't change directory to: " << getenv("HOME") << endl;
+  if(!cmds[1].empty())
+  {
+      //absolute path given
+      if(cmds[1][0] == '/')
+      {
+	if(chdir(cmds[1].c_str()) != 0)
+	  cerr << "Error, invalid directory: " << cmds[1] << endl;
+      }
+      //dosen't start with '/' so relitive path given
+      else
+      {
+	string workingdir = get_current_dir_name();
+	if(chdir((workingdir + "/" + cmds[1]).c_str()) != 0)
+	  cerr << "Error, invalid directory: " << cmds[1] << endl;
+      }
+  }
+  //only cd given as argument so change to home directory
+  else
+    if(chdir(getenv("HOME")) != 0)
+      cerr << "Error, couldn't change directory to: " << getenv("HOME") << endl;
 			
 }
 /*
