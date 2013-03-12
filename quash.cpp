@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <cstring>
+#include <signal.h>
 #include "Job.cpp"
 
 using namespace std;
@@ -14,6 +15,7 @@ vector<string> parseinput(string input);
 int countwords(string strString);
 char** vectortoarray(vector<string> &thestrings);
 //void basicParse(string input, string found, int splitPoint);
+void cd( string cmds);
 
 int main(int argc, char **argv, char **envp)
 {
@@ -42,6 +44,16 @@ int main(int argc, char **argv, char **envp)
     //Check to see if the user issued the quit command
     if(cmdinput[0] == "quit" || cmdinput[0] == "exit")
       exit(0);
+    //Check to see if user issued the cd command
+    else if(cmdinput[0] == "cd")
+    	cd(cmdinput);
+	//Check to see if user issued the set command
+//    else if(cmdinput[0] == "set")
+//    	set(cmdinput);
+	//Check to see if user issued the kill command
+//    else if(cmdinput[0] == "kill")
+//    	kill(cmdinput);
+    
     //Check to see if the user wants to see the environment, print it out
     else if(cmdinput[0] == "env")
     {
@@ -184,3 +196,65 @@ char** vectortoarray(vector<string> &thestrings)
 
   return temp;
 }
+
+void cd( string cmds[])
+{
+	if(!cmds[1].empty())
+	{
+		//absolute path given
+		if(cmds[1][0] == '/')
+		{
+			if(chdir(cmds[1].c_str()) != 0)
+				cerr << "Error, invalid directory: " << cmds[1] << endl;
+		}
+		//dosen't start with '/' so relitive path given
+		else
+		{
+			string workingdir = get_current_dir_name();
+			if(chdir((workingdir + "/" + cmds[1]).c_str()) != 0)
+				cerr << "Error, invalid directory: " << cmds[1] << endl;
+		}
+	}
+	//only cd given as argument so change to home directory
+	else
+		if(chdir(getenv("HOME")) != 0)
+			cerr << "Error, couldn't change directory to: " << getenv("HOME") << endl;
+			
+}
+/*
+void set( string *cmds)
+{
+
+	if(cmds[1].empty())
+	{
+		cerr << "Error, No enviroment specified" << endl;
+		return;
+	}
+	
+	if(strncmp(cmds[1].c_str(), "HOME=", 5) == 0)
+	{
+		if(setenv("HOME", &cmds[1][5],1) == -1)
+			cerr << "Error, could not set HOME" << endl;
+	}
+	if(strncmp(cmds[1].c_str(), "PATH=", 5) == 0)
+	{
+		if(setenv("PATH", &cmds[1][5],1) == -1)
+			cerr << "Error, could not set PATH << endl;
+	}
+
+}
+
+void kill( string *cmds)
+{
+
+	if(cmds[1].empty())
+	{
+		cerr << "Must pass ID number of process to kill" << endl;
+		return;
+	}
+	if(kill(atoi(cmds[1].c_str()), SIGKILL) != 0)
+	{
+		cerr << "Error, Process could not be killed" << endl;
+	}
+
+}*/
