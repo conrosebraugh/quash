@@ -1,20 +1,20 @@
 Check list
 
-(X)  Run executables without arguments
-(X)  Run executables with argumnts
-(X)  Run executable with abslute path
-(X)  Run executable with relitive path
-( )  Background executables
-( )  Child process enviroment inheritance
-( )  Working Set function
-( )  Working cd function
-(X)  Working quit and exit functionality
-( )  Working job lookup function
-( )  I/O redirection to file
-( )  Piping
-( )  Read commands stored in file
-( )  Report
+(X)  Run executables without arguments	(10)
+(X)  Run executables with argumnts		(10)
+(X)  Working Set function				(5)
+(X)  Exit and Quit functionality		(5)
+(X)  Working cd function				(5)
+( )  Path error when exec not found		(10)
+(X)  Child process inherits enviroment	(5)
+( )  Background forground execution		(5)
+( )  Jobs command--background/forground	(10)
+( )  File redirection(< and >)			(5)
+( )  Single pipe						(10)
+( )  Reading commands from prompt/file	(10)
+( )  Report								(10)
+
 
 Bonus
-( )  Support multiple pipes
-( )  Kill background processes
+( )  Support multiple pipes				(5)
+( )  Kill background processes			(10)
