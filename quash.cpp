@@ -12,9 +12,9 @@
 using namespace std;
 
 vector<string> parseinput(string input);
-int countwords(string strString);
+int countwords(string strString, char delimiter);
 char** vectortoarray(vector<string> &thestrings);
-//void basicParse(string input, string found, int splitPoint);
+vector<string> parsePATH(string thepath);
 void cd( vector<string> cmds);
 void kill(vector<string> cmds);
 void set(vector<string> cmds);
@@ -25,6 +25,8 @@ int main(int argc, char **argv, char **envp)
   string PATH = (string)getenv("PATH");
   string HOME = (string)getenv("HOME");
   string workingdir;
+
+  vector<string> PATHvector = parsePATH(PATH);
 
   int status;
   pid_t pid;
@@ -109,7 +111,7 @@ int main(int argc, char **argv, char **envp)
 
 vector<string> parseinput(string input)
 {
-  int pos1, pos2 = 0, wordcount = countwords(input);
+  int pos1, pos2 = 0, wordcount = countwords(input, ' ');
 
   pos1 = input.find(" ");
 
@@ -139,7 +141,7 @@ vector<string> parseinput(string input)
   }
 }
 
-int countwords(string str)
+int countwords(string str, char delimiter)
 {
    bool inSpaces = true;
    int numWords = 0;
@@ -147,7 +149,7 @@ int countwords(string str)
 
    while (str[i] != NULL)
    {
-      if (isspace(str[i]))
+     if (str[i] == delimiter)
       {
          inSpaces = true;
       }
@@ -259,4 +261,35 @@ void kill(vector<string> cmds)
 		cerr << "Error, Process could not be killed" << endl;
 	}
 
+}
+
+vector<string> parsePATH(string thepath)
+{
+  int pos1, pos2 = 0, wordcount = countwords(thepath, ':');
+
+  pos1 = thepath.find(":");
+
+  vector<string> pathitems;
+ 
+  if(wordcount == 1)
+  {
+    pathitems.push_back(thepath);
+  }
+  else
+  {
+    pathitems.push_back(thepath.substr(0, pos1));
+    
+    int i = 1;
+    
+    while(i < wordcount)
+    {
+      pos1++;
+      pos2 = thepath.substr(pos1).find(":");
+      pathitems.push_back(thepath.substr(pos1, pos2));
+      pos1 = pos1 + pos2;
+      i++;
+    }
+  }
+
+  return pathitems;
 }
