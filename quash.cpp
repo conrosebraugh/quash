@@ -16,6 +16,8 @@ int countwords(string strString);
 char** vectortoarray(vector<string> &thestrings);
 //void basicParse(string input, string found, int splitPoint);
 void cd( vector<string> cmds);
+void kill(vector<string> cmds);
+void set(vector<string> cmds);
 
 int main(int argc, char **argv, char **envp)
 {
@@ -48,11 +50,11 @@ int main(int argc, char **argv, char **envp)
     else if(cmdinput[0] == "cd")
     	cd(cmdinput);
 	//Check to see if user issued the set command
-//    else if(cmdinput[0] == "set")
-//    	set(cmdinput);
+    else if(cmdinput[0] == "set")
+ 	  	set(cmdinput);
 	//Check to see if user issued the kill command
-//    else if(cmdinput[0] == "kill")
-//    	kill(cmdinput);
+    else if(cmdinput[0] == "kill")
+    	kill(cmdinput);
     
     //Check to see if the user wants to see the environment, print it out
     else if(cmdinput[0] == "env")
@@ -199,7 +201,7 @@ char** vectortoarray(vector<string> &thestrings)
 
 void cd(vector<string> cmds)
 {
-  if(!cmds[1].empty())
+  if(cmds.size() > 1)
   {
       //absolute path given
       if(cmds[1][0] == '/')
@@ -221,33 +223,33 @@ void cd(vector<string> cmds)
       cerr << "Error, couldn't change directory to: " << getenv("HOME") << endl;
 			
 }
-/*
-void set( string *cmds)
+
+void set(vector<string> cmds)
 {
 
-	if(cmds[1].empty())
+	if(cmds.size() == 1)
 	{
 		cerr << "Error, No enviroment specified" << endl;
 		return;
 	}
 	
-	if(strncmp(cmds[1].c_str(), "HOME=", 5) == 0)
+	else if(strncmp(cmds[1].c_str(), "HOME=", 5) == 0)
 	{
 		if(setenv("HOME", &cmds[1][5],1) == -1)
 			cerr << "Error, could not set HOME" << endl;
 	}
-	if(strncmp(cmds[1].c_str(), "PATH=", 5) == 0)
+	else if(strncmp(cmds[1].c_str(), "PATH=", 5) == 0)
 	{
 		if(setenv("PATH", &cmds[1][5],1) == -1)
-			cerr << "Error, could not set PATH << endl;
+			cerr << "Error, could not set PATH" << endl;
 	}
 
 }
 
-void kill( string *cmds)
+void kill(vector<string> cmds)
 {
 
-	if(cmds[1].empty())
+	if(cmds.size() == 1)
 	{
 		cerr << "Must pass ID number of process to kill" << endl;
 		return;
@@ -257,4 +259,4 @@ void kill( string *cmds)
 		cerr << "Error, Process could not be killed" << endl;
 	}
 
-}*/
+}
