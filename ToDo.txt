@@ -2,15 +2,15 @@ Check list
 
 (X)  Run executables without arguments
 (X)  Run executables with argumnts
-( )  Run executable with abslute path
-( )  Run executable with relitive path
+(X)  Run executable with abslute path
+(X)  Run executable with relitive path
 ( )  Background executables
 ( )  Child process enviroment inheritance
 ( )  Working Set function
 ( )  Working cd function
 (X)  Working quit and exit functionality
 ( )  Working job lookup function
-( )  I/O redirection file
+( )  I/O redirection to file
 ( )  Piping
 ( )  Read commands stored in file
 ( )  Report
