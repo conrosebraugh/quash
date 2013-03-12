@@ -6,8 +6,9 @@ Check list
 (X)  Run executable with relitive path
 ( )  Background executables
 ( )  Child process enviroment inheritance
-( )  Working Set function
-( )  Working cd function
+(X)  Working Set function
+(X)  Working cd function
+(X)  Working kill function
 (X)  Working quit and exit functionality
 ( )  Working job lookup function
 ( )  I/O redirection to file
