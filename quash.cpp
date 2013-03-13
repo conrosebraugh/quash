@@ -19,6 +19,7 @@ void cd( vector<string> cmds);
 void kill(vector<string> cmds);
 void set(vector<string> cmds);
 void commandwithargs(vector<string> cmds, char** envp);
+void background(pid_t pid, vector<string> cmds, char** envp);
 
 int main(int argc, char **argv, char **envp)
 {
@@ -71,6 +72,11 @@ int main(int argc, char **argv, char **envp)
 	cout << envp[i] << endl;
 	i++;
       }
+    }
+    else if(cmdinput[cmdinput.size()-1] == "&")
+    {
+      pid = fork();
+      background(pid, cmdinput, envp);
     }
     //command isn't one of the above and isn't just a carriage return
     else if(cmdinput[0] != "")
@@ -290,7 +296,22 @@ void commandwithargs(vector<string> cmds, char** envp)
    cout << "argarray[" << j << "]: " << argarray[j] << endl;
    
  execvp(cmds[0].c_str(), argarray); 
-
  
  cout << "you shouldn't see this" << endl;
+}
+
+void background(pid_t pid, vector<string> cmds, char** envp)
+{
+  pid_t foo;
+
+  if(pid == 0)
+  {
+    foo = fork();
+    if(foo > 0)
+      exit(1);
+    else
+      commandwithargs(cmds, envp);
+  }
+  else
+    return;
 }
