@@ -18,6 +18,7 @@ vector<string> parsePATH(string thepath);
 void cd( vector<string> cmds);
 void kill(vector<string> cmds);
 void set(vector<string> cmds);
+void commandwithargs(vector<string> cmds, vector<string> path);
 
 int main(int argc, char **argv, char **envp)
 {
@@ -48,15 +49,18 @@ int main(int argc, char **argv, char **envp)
     //Check to see if the user issued the quit command
     if(cmdinput[0] == "quit" || cmdinput[0] == "exit")
       exit(0);
+
     //Check to see if user issued the cd command
     else if(cmdinput[0] == "cd")
-    	cd(cmdinput);
-	//Check to see if user issued the set command
+      cd(cmdinput);
+
+    //Check to see if user issued the set command
     else if(cmdinput[0] == "set")
- 	  	set(cmdinput);
-	//Check to see if user issued the kill command
+      set(cmdinput);
+
+    //Check to see if user issued the kill command
     else if(cmdinput[0] == "kill")
-    	kill(cmdinput);
+      kill(cmdinput);
     
     //Check to see if the user wants to see the environment, print it out
     else if(cmdinput[0] == "env")
@@ -68,7 +72,7 @@ int main(int argc, char **argv, char **envp)
 	i++;
       }
     }
-    //command isn' one of the above and isn't just a carriage return
+    //command isn't one of the above and isn't just a carriage return
     else if(cmdinput[0] != "")
     {
       pid = fork(); //fork a new process
@@ -90,10 +94,11 @@ int main(int argc, char **argv, char **envp)
 	else 
 	{
 	  //create a c_str array of the arguments to the command
-	  char** argarray = vectortoarray(cmdinput);
+	  // char** argarray = vectortoarray(cmdinput);
 	  //exec a new process that is the command at cmdinput[0]
 	  //followed by the arguments to that command
-	  execvp(cmdinput[0].c_str(), argarray);
+	  // execvp(cmdinput[0].c_str(), argarray);
+	  commandwithargs(cmdinput, PATHvector);
 	}
       }//end else if(pid...  
       //If this is the parent process...
@@ -165,38 +170,18 @@ int countwords(string str, char delimiter)
    return numWords;
 }
 
-/*void basicParse(string input, string &found, int &splitPoint)
-{
-	for(int i=0; i<input; i++)
-	{
-		if(strcmp(input[i], "|") == 0)
-		{
-			found = "pipe";
-			splitPoint = i;
-		}
-		else if(strcmp(input[i], ">") == 0)
-		{
-			found = "reOut";
-			splitPoint = i;
-		}
-		else if(strcmp(input[i], "<") == 0)
-		{
-			found = "reIn";
-			splitPoint = i;
-		}
-	}
-	
-}*/
-
 char** vectortoarray(vector<string> &thestrings)
 {
   //create a dynamic array of c strings
-  char** temp = new char*[thestrings.size()-1];
+  char** temp = new char*[thestrings.size()+1];
+
+  temp[0] = NULL;
+  temp[thestrings.size()+1] = NULL;
 
   int i = 1;
 
   for(; i < thestrings.size(); i++)
-    temp[i-1] = (char*)thestrings[i].c_str();
+    temp[i] = (char*)thestrings[i].c_str();
 
   return temp;
 }
@@ -292,4 +277,32 @@ vector<string> parsePATH(string thepath)
   }
 
   return pathitems;
+}
+
+void commandwithargs(vector<string> cmds, vector<string> path)
+{
+ char** argarray = vectortoarray(cmds); 
+ int i = 0;
+ char* slash = new char[1];
+ slash[0] = '/';
+ 
+ cout << "cmds: " << cmds[0] << endl;
+ 
+ while(i < path.size())
+ {
+   argarray[0] = (char*)path[i].c_str();
+   strcat(argarray[0], slash);
+   strcat(argarray[0], (char*)cmds[0].c_str());
+
+   cout << "cmds.size(): " << cmds.size() << endl;
+
+   for(int j = 0; j < (cmds.size()+2); j++)
+     cout << "argarray[" << j << "]: " << argarray[j] << endl;
+   
+
+   execvp(cmds[0].c_str(), argarray); 
+
+   i++;
+ }
+ cout << "you shouldn't see this" << endl;
 }
