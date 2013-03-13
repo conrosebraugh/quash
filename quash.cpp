@@ -20,6 +20,11 @@ void kill(vector<string> cmds);
 void set(vector<string> cmds);
 void commandwithargs(vector<string> cmds, char** envp);
 void background(pid_t pid, vector<string> cmds, char** envp);
+void checkJobs();
+void killBackground();
+//Job job;
+int processCount = 1;
+vector<Job> allJobs;
 
 int main(int argc, char **argv, char **envp)
 {
@@ -62,6 +67,14 @@ int main(int argc, char **argv, char **envp)
     //Check to see if user issued the kill command
     else if(cmdinput[0] == "kill")
       kill(cmdinput);
+     
+    //Check to see if user issued the jobs command
+    else if(cmdinput[0] == "jobs")
+      checkJobs();
+      
+    //Check to see if user issued the jobs command
+    else if(cmdinput[0] == "killBackground" || cmdinput[0] == "killbackground" || cmdinput[0] == "kill Background" || cmdinput[0] == "kill background")
+      killBackground();
     
     //Check to see if the user wants to see the environment, print it out
     else if(cmdinput[0] == "env")
@@ -291,28 +304,71 @@ void commandwithargs(vector<string> cmds, char** envp)
  char** argarray = vectortoarray(cmds); 
  argarray[0] = (char*)cmds[0].c_str();
 
- cout << "cmds: " << cmds[0] << endl;
+ //cout << "cmds: " << cmds[0] << endl;
 
  for(int j = 0; j < cmds.size(); j++)
-   cout << "argarray[" << j << "]: " << argarray[j] << endl;
+//   cout << "argarray[" << j << "]: " << argarray[j] << endl;
    
  execvp(cmds[0].c_str(), argarray); 
  
- cout << "you shouldn't see this" << endl;
+ cout << "Command not found" << endl;
 }
 
 void background(pid_t pid, vector<string> cmds, char** envp)
 {
   pid_t foo;
+  int temp;
 
   if(pid == 0)
   {
     foo = fork();
+      
     if(foo > 0)
+    {
+     Job job(processCount, foo, cmds[0]);
+      
+      allJobs.push_back(job);
+      cout << allJobs.size() << endl;
+      processCount++;
+      for( int i = 0; i < allJobs.size(); i++)
+	  {
+	  	cout << allJobs[i].getjobid() << "  " << allJobs[i].getpid() << "  " << allJobs[i].getcommand() << endl;
+	  }
       exit(1);
+     }
     else
+    {
+     
       commandwithargs(cmds, envp);
+    }
   }
   else
     return;
+}
+void checkJobs()
+{
+	if( allJobs.size() == 0)
+	  cout << "No background jobs found" << endl;
+	
+	else
+	{
+	  for( int i = 0; i < allJobs.size(); i++)
+	  {
+	  	cout << allJobs[i].getjobid() << "  " << allJobs[i].getpid() << "  " << allJobs[i].getcommand() << endl;
+	  }
+	}
+
+}
+
+void killBackground()
+{
+	if(allJobs.size() == 0)
+		cout << "No background jobs found" << endl;
+	else
+	{
+		for( int i = 0; i < allJobs.size(); i++)
+		{
+			if(kill(allJobs[i].getpid(), SIGKILL) != 0);
+		}
+	}
 }
