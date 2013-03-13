@@ -331,20 +331,19 @@ void background(pid_t pid, vector<string> cmds, char** envp)
       
     if(foo > 0)
     {
-     Job job(processCount, foo, cmds[0]);
+      Job job(processCount, foo, cmds[0]);
       
       allJobs.push_back(job);
       cout << allJobs.size() << endl;
       processCount++;
       for( int i = 0; i < allJobs.size(); i++)
-	  {
-	  	cout << allJobs[i].getjobid() << "  " << allJobs[i].getpid() << "  " << allJobs[i].getcommand() << endl;
-	  }
+      {
+	cout << allJobs[i].getjobid() << "  " << allJobs[i].getpid() << "  " << allJobs[i].getcommand() << endl;
+      }
       exit(1);
-     }
+    }
     else
     {
-     
       commandwithargs(cmds, envp);
     }
   }
