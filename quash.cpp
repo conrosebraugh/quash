@@ -75,6 +75,7 @@ int main(int argc, char **argv, char **envp)
     }
     else if(cmdinput[cmdinput.size()-1] == "&")
     {
+      cmdinput.pop_back();
       pid = fork();
       background(pid, cmdinput, envp);
     }
