@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <cstring>
 #include <signal.h>
+#include <errno.h>
 #include "Job.cpp"
 
 using namespace std;
@@ -172,7 +173,7 @@ int countwords(string str, char delimiter)
    int numWords = 0;
    int i = 0;
 
-   while (str[i] != NULL)
+   while (str[i] != '\0')
    {
      if (str[i] == delimiter)
       {
@@ -196,7 +197,7 @@ char** vectortoarray(vector<string> &thestrings)
   char** temp = new char*[thestrings.size()+1];
 
   temp[0] = NULL;
-  temp[thestrings.size()+1] = NULL;
+  temp[thestrings.size()] = NULL;
 
   int i = 1;
 
@@ -303,13 +304,18 @@ void commandwithargs(vector<string> cmds, char** envp)
 {
  char** argarray = vectortoarray(cmds); 
  argarray[0] = (char*)cmds[0].c_str();
+ int ret = 0;
 
  //cout << "cmds: " << cmds[0] << endl;
 
  for(int j = 0; j < cmds.size(); j++)
 //   cout << "argarray[" << j << "]: " << argarray[j] << endl;
    
- execvp(cmds[0].c_str(), argarray); 
+ ret = execvp(cmds[0].c_str(), argarray);
+ if (ret) {
+   perror("error: ");
+   printf("errno = %d.\n", errno);
+ }
  
  cout << "Command not found" << endl;
 }
