@@ -18,7 +18,7 @@ vector<string> parsePATH(string thepath);
 void cd( vector<string> cmds);
 void kill(vector<string> cmds);
 void set(vector<string> cmds);
-void commandwithargs(vector<string> cmds, vector<string> path);
+void commandwithargs(vector<string> cmds, char** envp);
 
 int main(int argc, char **argv, char **envp)
 {
@@ -98,7 +98,7 @@ int main(int argc, char **argv, char **envp)
 	  //exec a new process that is the command at cmdinput[0]
 	  //followed by the arguments to that command
 	  // execvp(cmdinput[0].c_str(), argarray);
-	  commandwithargs(cmdinput, PATHvector);
+	  commandwithargs(cmdinput, envp);
 	}
       }//end else if(pid...  
       //If this is the parent process...
@@ -279,30 +279,18 @@ vector<string> parsePATH(string thepath)
   return pathitems;
 }
 
-void commandwithargs(vector<string> cmds, vector<string> path)
+void commandwithargs(vector<string> cmds, char** envp)
 {
  char** argarray = vectortoarray(cmds); 
- int i = 0;
- char* slash = new char[1];
- slash[0] = '/';
- 
+ argarray[0] = (char*)cmds[0].c_str();
+
  cout << "cmds: " << cmds[0] << endl;
- 
- while(i < path.size())
- {
-   argarray[0] = (char*)path[i].c_str();
-   strcat(argarray[0], slash);
-   strcat(argarray[0], (char*)cmds[0].c_str());
 
-   cout << "cmds.size(): " << cmds.size() << endl;
-
-   for(int j = 0; j < (cmds.size()+2); j++)
-     cout << "argarray[" << j << "]: " << argarray[j] << endl;
+ for(int j = 0; j < cmds.size(); j++)
+   cout << "argarray[" << j << "]: " << argarray[j] << endl;
    
+ execvp(cmds[0].c_str(), argarray); 
 
-   execvp(cmds[0].c_str(), argarray); 
-
-   i++;
- }
+ 
  cout << "you shouldn't see this" << endl;
 }
