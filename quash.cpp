@@ -29,6 +29,7 @@ vector<Job> allJobs;
 
 int main(int argc, char **argv, char **envp)
 {
+
   string input;
   string PATH = (string)getenv("PATH");
   string HOME = (string)getenv("HOME");
@@ -39,7 +40,7 @@ int main(int argc, char **argv, char **envp)
   int status;
   pid_t pid;
 
-  while(true)
+  while(cin.good())
   {
     workingdir = get_current_dir_name();
     int temp = workingdir.find_last_of("/");
@@ -47,6 +48,7 @@ int main(int argc, char **argv, char **envp)
     cout << "[" << workingdir << "]" << "quash$ ";
     
     getline(cin, input);
+
     
     vector<string> cmdinput = parseinput(input);
     
@@ -74,7 +76,7 @@ int main(int argc, char **argv, char **envp)
       checkJobs();
       
     //Check to see if user issued the jobs command
-    else if(cmdinput[0] == "killBackground" || cmdinput[0] == "killbackground" || cmdinput[0] == "kill Background" || cmdinput[0] == "kill background")
+    else if(cmdinput[0] == "killBackground" || cmdinput[0] == "killbackground" || cmdinput[0] == "kill Background")
       killBackground();
     
     //Check to see if the user wants to see the environment, print it out
@@ -399,5 +401,6 @@ void killBackground()
 			if(kill(allJobs[i].getpid(), SIGKILL) != 0);
 		for( int i = 0; i < allJobs.size(); i++)
 			allJobs.pop_back();
+		cout << "Killed" << endl;
 	}
 }
