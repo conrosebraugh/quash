@@ -91,8 +91,26 @@ int main(int argc, char **argv, char **envp)
     {
       cmdinput.pop_back();
       pid = fork();
-      background(pid, cmdinput, envp);
-    }
+      
+      if(pid > 0)
+     {
+      Job job(processCount, pid, cmdinput[0]);
+      
+      allJobs.push_back(job);
+     // cout << allJobs.size() << endl;
+      processCount++;
+      
+      waitpid(pid, NULL, WNOHANG);
+	 }
+	 else if(pid == 0)
+	 {
+	 	commandwithargs(cmdinput, envp);
+	 }	
+	 	
+	 else
+	 	cout << "Fork failed" << endl;
+	 
+	}
     //command isn't one of the above and isn't just a carriage return
     else if(cmdinput[0] != "")
     {
@@ -107,9 +125,15 @@ int main(int argc, char **argv, char **envp)
 	if(cmdinput.size() == 1)
 	{
 	  char* blah = (char*)"";
+	  int ret = 0;
 	  //exec a new process that is the single command 
 	  //which is found at cmdinput[0]
-	  execlp(cmdinput[0].c_str(), blah, (char*)NULL);
+	  ret = execlp(cmdinput[0].c_str(), blah, (char*)NULL);
+	  if(ret)
+	  {
+	  	perror("error ");
+	  	//printf("errno = %d.\n", errno);
+	  }
 	}
 	//...and the command has arguments...
 	else 
@@ -313,11 +337,11 @@ void commandwithargs(vector<string> cmds, char** envp)
    
  ret = execvp(cmds[0].c_str(), argarray);
  if (ret) {
-   perror("error: ");
-   printf("errno = %d.\n", errno);
+   perror("error ");
+  // printf("errno = %d.\n", errno);
  }
  
- cout << "Command not found" << endl;
+ //cout << "Command not found" << endl;
 }
 
 void background(pid_t pid, vector<string> cmds, char** envp)
@@ -372,8 +396,8 @@ void killBackground()
 	else
 	{
 		for( int i = 0; i < allJobs.size(); i++)
-		{
 			if(kill(allJobs[i].getpid(), SIGKILL) != 0);
-		}
+		for( int i = 0; i < allJobs.size(); i++)
+			allJobs.pop_back();
 	}
 }
