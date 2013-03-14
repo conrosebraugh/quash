@@ -102,6 +102,8 @@ int main(int argc, char **argv, char **envp)
      // cout << allJobs.size() << endl;
       processCount++;
       
+      cout << "[" << processCount << "]" << pid << " running in background" << endl;
+      
       waitpid(pid, NULL, WNOHANG);
 	 }
 	 else if(pid == 0)
@@ -126,14 +128,19 @@ int main(int argc, char **argv, char **envp)
 	//...and the command is a single word...
 	if(cmdinput.size() == 1)
 	{
-	  char* blah = (char*)"";
+	  char** blah = new char*[2];
 	  int ret = 0;
+	  
+	  blah[0] = (char*)cmdinput[0].c_str();
+	  blah[1] = NULL;
 	  //exec a new process that is the single command 
 	  //which is found at cmdinput[0]
-	  ret = execlp(cmdinput[0].c_str(), blah, (char*)NULL);
+	  
+	  ret = execvpe(cmdinput[0].c_str(), blah, envp);
 	  if(ret)
 	  {
 	  	perror("error ");
+	  	exit(0);
 	  	//printf("errno = %d.\n", errno);
 	  }
 	}
@@ -280,20 +287,6 @@ void set(vector<string> cmds)
 
 }
 
-void kill(vector<string> cmds)
-{
-
-	if(cmds.size() == 1)
-	{
-		cerr << "Must pass ID number of process to kill" << endl;
-		return;
-	}
-	if(kill(atoi(cmds[1].c_str()), SIGKILL) != 0)
-	{
-		cerr << "Error, Process could not be killed" << endl;
-	}
-
-}
 
 vector<string> parsePATH(string thepath)
 {
@@ -337,9 +330,10 @@ void commandwithargs(vector<string> cmds, char** envp)
  for(int j = 0; j < cmds.size(); j++)
 //   cout << "argarray[" << j << "]: " << argarray[j] << endl;
    
- ret = execvp(cmds[0].c_str(), argarray);
+ ret = execvpe(cmds[0].c_str(), argarray, envp);
  if (ret) {
    perror("error ");
+   exit(0);
   // printf("errno = %d.\n", errno);
  }
  
